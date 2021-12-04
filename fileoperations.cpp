@@ -23,17 +23,17 @@ void fileoperations::setFilename(string filename)
 }
 
 //Function that retrieves player data. If file found, player object ptr loads all values and returns true, else return false
-bool fileoperations::LoadPlayer(string filename, player& p)
+bool fileoperations::LoadPlayer(player& p)
 {
 
-    filename = filename + ".txt";
-    pFile.open(filename, fstream::in);
+    
+    pFile.open(pFilename, fstream::in);
     
     if (pFile.fail())
     {
+        pFile.close();
         return false;
     }
-    pFilename = filename;
 
 
     pFile >> p; // TODO
@@ -61,6 +61,27 @@ void fileoperations::SavePlayer(player& p)
     pFile.close();
 
 
+}
+
+
+bool fileoperations::saveFileExists(string password)
+{
+    password = password + ".txt";
+    bool ret = false;
+    ifstream ifile;
+
+    ifile.open(password);
+
+    if (ifile)
+    {
+        ret = true;
+    }
+    else
+    {
+        ret = false;
+    }
+    ifile.close();
+    return ret;
 }
 
 
