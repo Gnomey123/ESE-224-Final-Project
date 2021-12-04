@@ -70,7 +70,7 @@ player::player(string playerName, int myDiff)
 
 int player::genRandNum(int a, int b)
 {
-    srand(time(0));
+   // srand(time(0));
     return (rand() % (b - a + 1) + a);
 }
 

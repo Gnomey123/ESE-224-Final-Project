@@ -8,7 +8,7 @@ using namespace std;
 //default weapon
 weapon::weapon()
 {
-    name = "Fist";
+    name = "";
     dmg = 5;
     amount = 0;
 }

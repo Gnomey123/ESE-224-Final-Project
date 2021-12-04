@@ -93,7 +93,7 @@ int main()
 
 	/*********************/
 	//	GLOBAL INIT ZONE
-	int srand(time(0));
+	srand((unsigned int)time(NULL));
 
 	int segVal = 1;
 	/*********************/
@@ -294,7 +294,7 @@ int newPlayerSeg()
 			cout << "In order to retrieve your saved player, you must write down your unique save password." << endl;
 
 			cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
-			cout << "@   YOUR PASSWORD: " << pass << "    @" << endl;
+			cout << "@   YOUR PASSWORD: " << pass << "     @" << endl;
 			cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
 			
 			cout << "\*such an original 80s idea, ik...\*" << endl;
@@ -309,8 +309,9 @@ int newPlayerSeg()
 			
 
 			myPlayer = new player(newPlayerName, i);
-			myFileOp.setPlayername(newPlayerName);
+			myPlayer->upgradeWeaponList();//			Always called first thing
 
+			myFileOp.setFilename(pass);
 			myPlayer->setPassword(pass);
 			
 
@@ -382,13 +383,7 @@ int loadPlayerSeg() // all todo
 
 
 
-	//				init zone
 
-	//													bool gameRunning = true;
-	//													int i;
-	//													int weaponSel;
-
-	//end init zone
 
 
 	///
@@ -400,8 +395,11 @@ int loadPlayerSeg() // all todo
 
 int masterSeg()
 {
+
 	bool gameRunning = true;
 	int i;
+	int weaponSel;
+
 	while (gameRunning)
 	{
 
@@ -427,7 +425,7 @@ int masterSeg()
 				
 				switch (i)
 			{
-					/*
+					
 			case 1:
 				cout << "You currently have $" << myPlayer->getCurr() << " available" << endl;
 				cout << "[Catalog]\n" << endl;
@@ -453,19 +451,17 @@ int masterSeg()
 						}
 				break;
 
-				*///TODO
+				//TODO
 
 			case 2:
 
-				/*
-				* 
-				* 
+				
 				myPlayer->print();
 				cout << "[Weapon Catalog]\n" << endl;
 				myPlayer->printWeaponList();
 				break;
 
-				*///TODO
+				
 			case 3:
 				myEnemy.initBasic();
 				myEnemy.ModifyMaxHP(genRandNum(0, 3));
@@ -637,9 +633,11 @@ int masterSeg()
 				//myFileOp.ShowScoreRank(); TODO
 				break;
 			case 6:
+				
 				myFileOp.SavePlayer(*myPlayer);
+				
 				cout << "Bye Bye..." << endl;
-				exit(0);
+				return valQuitGame;
 				break;
 			default:
 				cout << "Please enter a valid choice." << endl;

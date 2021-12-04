@@ -17,9 +17,9 @@ using namespace std;
 
  
 
-void fileoperations::setPlayername(string playername)
+void fileoperations::setFilename(string filename)
 {
-    pFilename = playername + ".txt";
+    pFilename = filename + ".txt";
 }
 
 //Function that retrieves player data. If file found, player object ptr loads all values and returns true, else return false
@@ -51,7 +51,7 @@ void fileoperations::SavePlayer(player& p)
     
     if (pFile.fail())
     {
-         cout << "[CRITCAL ERROR]: attempt to save player caused outstream to fail" << endl;
+         cout << "[ERROR]: attempt to save player caused outstream to fail" << endl;
         return;
     }
 
