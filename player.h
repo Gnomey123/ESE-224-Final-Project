@@ -34,6 +34,8 @@ class player
 
 		int floor;
 
+
+		// Password is now being used to name save files. (instead of the player name)
 		string password;
 
 
