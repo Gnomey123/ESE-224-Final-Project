@@ -44,9 +44,6 @@ string genSavePassword();
 list<scoreNode> sbList;
 
 
-//Function that handles combat
-int combate();
-
 
 //Function Saves Scoreboard values to the "scoreboard.txt" once user wins or dies
 void saveScoreListToFile(scoreNode head);
@@ -87,6 +84,8 @@ int loadPlayerSeg();
 #define valMasterSeg 4;		// masterSeg is called via alias
 int masterSeg();
 
+#define valCombateSeg 5;		// combateSeg is called via alias
+int combateSeg();
 
 
 int main()
@@ -122,6 +121,10 @@ int main()
 		
 		case 4:						// valMasterSeg		[4]
 			segVal = masterSeg();
+			break;
+
+		case 5:						// valCombateSeg	[5]
+			segVal = combateSeg();
 			break;
 
 		default:
@@ -730,7 +733,7 @@ int masterSeg()
 }
 
 
-int combate()
+int combateSeg()
 {
 	cout << myEnemy;
 
