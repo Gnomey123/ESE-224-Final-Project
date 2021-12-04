@@ -25,7 +25,7 @@ int genRandNum(int a, int b);
 
 bool Resp();
 
-player *myPlayer;
+player myPlayer;
 
 enemy myEnemy;
 
@@ -308,11 +308,12 @@ int newPlayerSeg()
 
 			
 
-			myPlayer = new player(newPlayerName, i);
-			myPlayer->upgradeWeaponList();//			Always called first thing
+			myPlayer.setName(newPlayerName);
+			myPlayer.setDiffMod(i);
+			myPlayer.upgradeWeaponList();//			Always called first thing
 
 			myFileOp.setFilename(pass);
-			myPlayer->setPassword(pass);
+			myPlayer.setPassword(pass);
 			
 
 			isLooping = false;
@@ -337,48 +338,45 @@ int newPlayerSeg()
 // Load new player using password
 int loadPlayerSeg() // all todo
 {
-		
-	return 1;
 
-
-	/*
 	bool isLooping = true;
+	string password;
 
-	cout << "Welcome to the game!" << endl;
 	while (isLooping)
 	{
 		char c;
 		int i;
 
-		cout << "\nPlease enter a new player name\n[no spaces]:  ";
-		cin >> newPlayerName;
+		cout << "\nPlease enter your save password (or enter g for Main Menu)\n[xxx-xxx-xxxx]:  ";
+		cin >> password;
 		cout << endl;
 
-		//Player file already exists
-		if (myFileOp.playernameExists(newPlayerName))
+
+		//Check for 'g' response and prompt before exiting
+		if (password == "g")
 		{
-			cout << "Player exists, load current progress?" << endl;
-			while (1)
-			{
-				if (Resp())
-				{
-					cout << "Loading saved game..." << endl;
-					myFileOp.setPlayername(newPlayerName);
-					myPlayer = new player;
-					myFileOp.LoadPlayer(newPlayerName, *myPlayer);
-					isGameStarted = false;
-					break;
-				}
-				else
-				{
-					cout << "Okay. Please enter a different name" << endl;
-					break;
-				}
-			}
+			return valMenuSeg;
 		}
 
+		if (myFileOp.saveFileExists(password))
+		{
+
+			myFileOp.LoadPlayer(myPlayer);
+
+			isLooping = false;
+			cout << "Loading saved player \"" << myPlayer.getName() << "\"\n..." << endl;
+			return valMasterSeg;
+			break;
+		}
+		else
+		{
+			cout << "\nNo save found. Please try again" << endl;
+		}
+			
+		
+
 	}
-*/
+
 }
 
 
@@ -427,14 +425,14 @@ int masterSeg()
 			{
 					
 			case 1:
-				cout << "You currently have $" << myPlayer->getCurr() << " available" << endl;
+				cout << "You currently have $" << myPlayer.getCurr() << " available" << endl;
 				cout << "[Catalog]\n" << endl;
-				myPlayer->printWeaponList();
+				myPlayer.printWeaponList();
 
 				cout << "----" << endl;
 				cout << "Enter a number as shown to purchase (or any other to exit):" << endl;
 				cin >> weaponSel;
-						switch (myPlayer->buyWeapon(weaponSel))
+						switch (myPlayer.buyWeapon(weaponSel))
 						{
 						case -1:
 							cout << "\nExiting shop..." << endl;
@@ -443,7 +441,7 @@ int masterSeg()
 							cout << "\nNot enough money to buy, exiting...";
 							break;
 						case 1:
-							cout << "Weapon bought, you now have $" << myPlayer->getCurr() << endl;
+							cout << "Weapon bought, you now have $" << myPlayer.getCurr() << endl;
 							break;
 						default:
 							cout << "[ERROR] shop default statement reached" << endl;
@@ -456,9 +454,9 @@ int masterSeg()
 			case 2:
 
 				
-				myPlayer->print();
+				myPlayer.print();
 				cout << "[Weapon Catalog]\n" << endl;
-				myPlayer->printWeaponList();
+				myPlayer.printWeaponList();
 				break;
 
 				
@@ -466,11 +464,11 @@ int masterSeg()
 				myEnemy.initBasic();
 				myEnemy.ModifyMaxHP(genRandNum(0, 3));
 
-				myEnemy.setLVL(myPlayer->getFloor());
-				myEnemy.setCurr((myPlayer->getFloor()) * (genRandNum(1, 3) ) );
-				myEnemy.setDMG(myPlayer->getFloor());
+				myEnemy.setLVL(myPlayer.getFloor());
+				myEnemy.setCurr((myPlayer.getFloor()) * (genRandNum(1, 3) ) );
+				myEnemy.setDMG(myPlayer.getFloor());
 
-				myEnemy.ModifyMaxHP((myPlayer->getDiffMod() - 1)*2);
+				myEnemy.ModifyMaxHP((myPlayer.getDiffMod() - 1)*2);
 
 				cout << "\nSeeking for a fight, you approach an enemy with the following stats:\n" << endl;
 				
@@ -483,11 +481,11 @@ int masterSeg()
 
 					cout << "Here\'s your final score: \n" << endl;
 					
-					myPlayer->print();
+					myPlayer.print();
 					cout << "[Weapon Catalog]\n" << endl;
-					//myPlayer->printWeaponList(); TODO
+					//myPlayer.printWeaponList(); TODO
 
-					//myFileOp.SavePlayerScore(*(myPlayer->getPscoreboard())); TODO
+					//myFileOp.SavePlayerScore(*(myPlayer.getPscoreboard())); TODO
 
 
 					cout << "Global Top Scores: \n" << endl;
@@ -504,9 +502,9 @@ int masterSeg()
 				{
 					cout << "\n\nYou won the battle! And you got additional money from the enemy!" << endl;
 
-					myPlayer->ModifyCurrency(myEnemy.getCurr());
+					myPlayer.ModifyCurrency(myEnemy.getCurr());
 
-					myPlayer->addScore(myPlayer->getFloor());
+					myPlayer.addScore(myPlayer.getFloor());
 
 
 				}
@@ -518,15 +516,15 @@ int masterSeg()
 				break;
 			case 4:
 				myEnemy.initBasic();
-				if (myPlayer->getFloor() == 1)
+				if (myPlayer.getFloor() == 1)
 				{
 					myEnemy.setName("Dirty_Bubble");
 				}
-				else if (myPlayer->getFloor() == 2)
+				else if (myPlayer.getFloor() == 2)
 				{
 					myEnemy.setName("Man_Ray");
 				}
-				else if(myPlayer->getFloor() == 2)
+				else if(myPlayer.getFloor() == 2)
 				{
 					myEnemy.setName("The_Flying_Dutchman");
 				}
@@ -539,15 +537,15 @@ int masterSeg()
 
 				
 				
-				myEnemy.setMaxHP((myPlayer->getDiffMod() * 10));
+				myEnemy.setMaxHP((myPlayer.getDiffMod() * 10));
 
-				myEnemy.ModifyMaxHP((myPlayer->getFloor() * 35));
+				myEnemy.ModifyMaxHP((myPlayer.getFloor() * 35));
 				
 
-				myEnemy.setLVL(myPlayer->getFloor());
-				myEnemy.setCurr((myPlayer->getFloor()) * (genRandNum(1, 3))+ 5);
+				myEnemy.setLVL(myPlayer.getFloor());
+				myEnemy.setCurr((myPlayer.getFloor()) * (genRandNum(1, 3))+ 5);
 				
-				myEnemy.setDMG((myPlayer->getFloor()* 2) + 2);
+				myEnemy.setDMG((myPlayer.getFloor()* 2) + 2);
 
 
 				cout << "\nMaking your way to the top, you are ambushed by the dreaded \"" << myEnemy.getName() << "\" with the stats of:\n" << endl;
@@ -562,11 +560,11 @@ int masterSeg()
 					cout << "Here\'s your final score: \n" << endl;
 
 					
-					myPlayer->print();
+					myPlayer.print();
 					cout << "[Weapon Catalog]\n" << endl;
-					//myPlayer->printWeaponList(); TODO
+					//myPlayer.printWeaponList(); TODO
 
-					//myFileOp.SavePlayerScore(*(myPlayer->getPscoreboard())); TODO
+					//myFileOp.SavePlayerScore(*(myPlayer.getPscoreboard())); TODO
 
 
 					cout << "Global Top Scores: \n" << endl;
@@ -583,17 +581,17 @@ int masterSeg()
 				{
 					
 
-					if (myPlayer->getFloor() == 4)
+					if (myPlayer.getFloor() == 4)
 					{
 						cout << "CONGRATULATIONS! YOU\'VE FINALLY BEATEN Spongebob Battle for Bikini Bottom" << endl;
 
 						cout << "Here\'s your final score: \n" << endl;
 
-						myPlayer->print();
+						myPlayer.print();
 						cout << "[Weapon Catalog]\n" << endl;
-						//myPlayer->printWeaponList(); TODO
+						//myPlayer.printWeaponList(); TODO
 
-						//myFileOp.SavePlayerScore(*(myPlayer->getPscoreboard()));	TODO
+						//myFileOp.SavePlayerScore(*(myPlayer.getPscoreboard()));	TODO
 
 
 						cout << "Global Top Scores: \n" << endl;
@@ -605,16 +603,16 @@ int masterSeg()
 						exit(0);
 					}
 
-					myPlayer->setFloor(myPlayer->getFloor() + 1);
+					myPlayer.setFloor(myPlayer.getFloor() + 1);
 
-					myPlayer->ModifyCurrency(myEnemy.getCurr());
+					myPlayer.ModifyCurrency(myEnemy.getCurr());
 					
-					myPlayer->setHP(myPlayer->getMaxHP());
+					myPlayer.setHP(myPlayer.getMaxHP());
 
-					cout << "\n\nYou won the battle! You gain back your HP, acquire more loot, and advance to the next Level..." << myPlayer->getFloor() << endl;
+					cout << "\n\nYou won the battle! You gain back your HP, acquire more loot, and advance to the next Level..." << myPlayer.getFloor() << endl;
 
 
-					myPlayer->addScore(myPlayer->getFloor()*10);
+					myPlayer.addScore(myPlayer.getFloor()*10);
 
 
 
@@ -634,7 +632,7 @@ int masterSeg()
 				break;
 			case 6:
 				
-				myFileOp.SavePlayer(*myPlayer);
+				myFileOp.SavePlayer(myPlayer);
 				
 				cout << "Bye Bye..." << endl;
 				return valQuitGame;
@@ -664,20 +662,20 @@ int combate()
 	cout << "\n_______________________" << endl;
 	cout << "\nYour current stats:" << endl;
 	
-	myPlayer->print();
+	myPlayer.print();
 	cout << "_______________________" << endl;
 	cout << "\nWhich weapon will you use?\n" << endl;
 
 	//temp for fist
 	cout << "(0)  ";
 	cout << "[Weapon = ";
-	//cout << left << setw(10) << setfill(' ') << myPlayer->getWeaponList()[0].getName();	TODO
+	//cout << left << setw(10) << setfill(' ') << myPlayer.getWeaponList()[0].getName();	TODO
 	cout << "Damage = ";
-	//cout << left << setw(10) << setfill(' ') << to_string(myPlayer->getWeaponList()[0].getDMG()) + "]";	TODO
+	//cout << left << setw(10) << setfill(' ') << to_string(myPlayer.getWeaponList()[0].getDMG()) + "]";	TODO
 	cout << endl;
 
 
-	//myPlayer->printWeaponList(); TODO
+	//myPlayer.printWeaponList(); TODO
 	
 	while (1)
 	{
@@ -685,7 +683,7 @@ int combate()
 			cin >> i;
 			cout << endl;
 
-			// response = myPlayer->actAttack(i); TODO
+			// response = myPlayer.actAttack(i); TODO
 			if (response == -1)
 			{
 				cout << "Please enter a valid number again" << endl;
@@ -708,9 +706,9 @@ int combate()
 	}
 
 	cout << "[Enemy " << myEnemy.getName() << " Does " << myEnemy.getDMG() << " DMP to you]" << endl;
-	myPlayer->ModifyHealth((-1) * myEnemy.getDMG());
+	myPlayer.ModifyHealth((-1) * myEnemy.getDMG());
 
-	if (myPlayer->getHP() <= 0)
+	if (myPlayer.getHP() <= 0)
 	{
 		return 0;
 	}

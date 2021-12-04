@@ -362,7 +362,7 @@ void player::print()
 
 ostream& operator<<(ostream& os, player& p)
 {
-    os << p.name << " " << p.MaxHealth << " " << p.HealthPoints << " " << p.AttackDamageMod << " " << p.currency << " " << p.floor << " " << p.score << " " << p.password << " ";
+    os << p.name << " " << p.diffMod << " " << p.MaxHealth << " " << p.HealthPoints << " " << p.AttackDamageMod << " " << p.currency << " " << p.floor << " " << p.score << " " << p.password << " ";
 
     os << p.weaponList.size() << " ";
 
@@ -381,19 +381,19 @@ istream& operator>>(istream& is, player & p)
 {
 
     int t;
-    is >> p.name >> p.MaxHealth >> p.HealthPoints >> p.AttackDamageMod >> p.currency >> p.floor >> p.score >> p.password;
+    is >> p.name >> p.diffMod >> p.MaxHealth >> p.HealthPoints >> p.AttackDamageMod >> p.currency >> p.floor >> p.score >> p.password;
 
     is >> t;
 
     //clear weapon list
-    p.getWeaponList().clear();
+    p.weaponList.clear();
     
     weapon w;
   
     for (int x = 0; x < t; x++)
     {
         is >> w;
-        p.getWeaponList().push_back(w);
+        p.weaponList.push_back(w);
     }
 
     return is;
