@@ -19,7 +19,7 @@ using namespace std;
 
 void fileoperations::setPlayername(string playername)
 {
-    pFilename = playername + ".txt";
+    pFilename = playername + ".txtfcffff";
 }
 
 //Function that retrieves player data. If file found, player object ptr loads all values and returns true, else return false
