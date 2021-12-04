@@ -364,7 +364,7 @@ int loadPlayerSeg() // all todo
 			myFileOp.LoadPlayer(myPlayer);
 
 			isLooping = false;
-			cout << "Loading saved player \"" << myPlayer.getName() << "\"..." << endl;
+			cout << "Loading saved player \"" << myPlayer.getName() << "\"\n..." << endl;
 			return valMasterSeg;
 			break;
 		}

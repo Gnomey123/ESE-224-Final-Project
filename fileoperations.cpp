@@ -74,6 +74,7 @@ bool fileoperations::saveFileExists(string password)
 
     if (ifile)
     {
+        pFilename = password;
         ret = true;
     }
     else
