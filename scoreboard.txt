@@ -1,0 +1,8 @@
+player_1 10
+apple 3
+whos_in_paris 150
+gnomeyOg 5
+whos_in_paris 300
+banana 3
+player_1 5
+gnomeyOg 15
