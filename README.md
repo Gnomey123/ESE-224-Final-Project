@@ -1,4 +1,4 @@
-<h1 align="center">Welcome to ESE124 Ant Project 👋</h1>
+<h1 align="center">Welcome to ESE224 Final Project 👋</h1>
 <p>
 </p>
 
