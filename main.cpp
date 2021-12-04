@@ -3,7 +3,6 @@
 #include <vector>
 #include <list>
 #include <stack>
-#include <queue>
 #include <fstream>
 #include <ctype.h>
 #include <iomanip>
@@ -109,7 +108,7 @@ int main()
 
 		case 1:						// valMenuSeg		[1]
 			segVal = menuSeg();
-			sbList.clear();		//clear list after to clear memory values
+			sbList.clear();		//clear list after
 			break;
 		
 		case 2:						// valNewPlayerSeg	[2]
@@ -396,14 +395,8 @@ int masterSeg()
 {
 
 	bool gameRunning = true;
-	bool isShopping = false;
-
 	int i;
 	int weaponSel;
-	char c;
-	string name;
-	stack<string> boughtWeapons;
-
 
 	while (gameRunning)
 	{
@@ -418,7 +411,7 @@ int masterSeg()
 		cout << "(3) Fight a random encountered enemy" << endl;
 		cout << "(4) Fight the next floor boss enemy" << endl;
 		cout << "(5) Display Global Scoreboard" << endl;
-		cout << "(6) Save and quit to Main Menu" << endl;
+		cout << "(6) Save and quit game" << endl;
 
 		cout << "\nYour choice: ";
 
@@ -428,7 +421,7 @@ int masterSeg()
 			
 				
 				
-			switch (i)
+				switch (i)
 			{
 					
 			case 1:
@@ -437,44 +430,26 @@ int masterSeg()
 				myPlayer.printWeaponList();
 
 				cout << "----" << endl;
-				cout << "Enter a number as shown to add it to your cart. When finished, enter any other number to checkout" << endl;
-				
-					
-
-				isShopping = true;
-				while (isShopping)
-				{
-					cin >> weaponSel;
-					switch (myPlayer.buyWeapon(weaponSel))
-					{
-					case -1:
-						isShopping = false;
-						cout << "\nExiting shop" << endl;
-						break;
-					case 0:
-						cout << "...not enough money to buy ( $" << myPlayer.getCurr() << " )." << endl;
-						break;
-					case 1:
-						boughtWeapons.push(myPlayer.getWeaponIndexName(weaponSel));
-						cout << "item bought." << endl;
-						break;
-					default:
-						cout << "[ERROR] shop default statement reached" << endl;
-						break;
-					}
-				}
-				cout << "\nShop Tracker" << endl;
-				cout << "[Weapon types bought]:\n" << endl;
-
-				while (!boughtWeapons.empty())
-				{
-					cout << boughtWeapons.top() << endl;
-					boughtWeapons.pop();
-				}
-
+				cout << "Enter a number as shown to purchase (or any other to exit):" << endl;
+				cin >> weaponSel;
+						switch (myPlayer.buyWeapon(weaponSel))
+						{
+						case -1:
+							cout << "\nExiting shop..." << endl;
+							break;
+						case 0:
+							cout << "\nNot enough money to buy, exiting...";
+							break;
+						case 1:
+							cout << "Weapon bought, you now have $" << myPlayer.getCurr() << endl;
+							break;
+						default:
+							cout << "[ERROR] shop default statement reached" << endl;
+							break;
+						}
 				break;
 
-				
+				//TODO
 
 			case 2:
 
@@ -653,65 +628,14 @@ int masterSeg()
 
 				break;
 			case 5:
-				cout << "\nPlease select an option (or enter any char to exit):" << endl;
-				cout << "View Scoreboard by score" << endl;
-				cout << "(b) View Scoreboard by name" << endl;
-				cout << "(c) View Global average score" << endl;
-				cout << "(d) Search Scoreboard by name" << endl;
-				cout << ":";
-				
-				
-				cin >> c;
-				cout << endl;
-
-
-				loadScoreList();//get scoreList ready
-
-				switch (c)
-				{
-				case 'a':
-
-					cout << "Top Scores:  " << genSavePassword() << endl;
-					sbSortByScore();
-					printScoreList();
-					break;
-
-				case 'b':
-					cout << "Scores By Name:" << endl;
-					sbSortByName();
-					printScoreList();
-					break;
-
-				case 'c':
-					cout << "All Player Cumulative Ranking:" << endl;
-					printScoreList(genAvgScoreList());
-					break;
-
-				case 'd':
-					cout << "Please enter name you'd like to search for (no spaces)" << endl;
-					cout << ": ";
-					cin >> name;
-					cout << endl;
-
-					cout << "searching for \"" << name << "\"..." << endl;
-
-					sbSearchForName(name);
-					break;
-				default:
-					break;
-				}
-				sbList.clear();
-
+				//myFileOp.ShowScoreRank(); TODO
 				break;
 			case 6:
 				
-
-
-
 				myFileOp.SavePlayer(myPlayer);
 				
 				cout << "Bye Bye..." << endl;
-				return valMenuSeg;
+				return valQuitGame;
 				break;
 			default:
 				cout << "Please enter a valid choice." << endl;

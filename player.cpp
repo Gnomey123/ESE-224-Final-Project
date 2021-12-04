@@ -15,18 +15,18 @@ void player::upgradeWeaponList()
     switch (weaponList.size())
     {
     case 0:
-        weaponList.push_back(weapon("Wooden", 5, 1, 0));
+        weaponList.push_back(weapon("Wooden", 5, 0, 0));
         break;
     case 1:
-        weaponList.push_back(weapon("Stone", 10, 2, 0));
+        weaponList.push_back(weapon("Stone", 10, 1, 0));
         break;
     case 2:
-        weaponList.push_back(weapon("Iron", 20, 3, 0));
+        weaponList.push_back(weapon("Iron", 20, 2, 0));
         break;
     case 3:
-        weaponList.push_back(weapon("Gold", 30, 4, 0));
+        weaponList.push_back(weapon("Gold", 30, 3, 0));
     case 4:
-        weaponList.push_back(weapon("Diamond", 50, 5, 0));
+        weaponList.push_back(weapon("Diamond", 50, 4, 0));
         break;
 
     default:
@@ -46,13 +46,9 @@ player::player()
     //fillWeaponList();
 
     name = "";
-
     MaxHealth = 25;
     HealthPoints = 25;
     AttackDamageMod = 0;
-    floor = 1;
-    score = 0;
-    diffMod = 0;
     currency = 0;
 }
 
@@ -67,9 +63,6 @@ player::player(string playerName, int myDiff)
     HealthPoints = 25;
     AttackDamageMod = 0;
     currency = 0;
-    floor = 1;
-    score = 0;
-    diffMod = 0;
 
 
 }
@@ -218,28 +211,13 @@ void player::setName(string n) {
     name = n;
 }
 
-string player::getWeaponIndexName(int index)
-{
-    if ((index < 0) || (index > weaponList.size()))
-    {
-        return "";
-    }
 
-    auto wpListPtr = weaponList.begin();
-
-    //advance iterator to proper index
-    advance(wpListPtr, index);
-   
-
-    return (*wpListPtr).getName();
-    
-}
 
 int player::buyWeapon(int i)
 {
    
     //Check invalid entry
-    if ((i < 0) || (i > weaponList.size()) )
+    if ((i < 1) || (i > weaponList.size()) )
     {
         return -1;
     }
@@ -247,7 +225,7 @@ int player::buyWeapon(int i)
     auto wpListPtr = weaponList.begin();
 
     //advance iterator to proper index
-    advance(wpListPtr, i);
+    advance(wpListPtr, i-1);
 
 
     //Check if player can afford weapon
@@ -384,7 +362,7 @@ void player::print()
 
 ostream& operator<<(ostream& os, player& p)
 {
-    os << p.name << " " << p.floor << " " << p.diffMod << " " << p.MaxHealth << " " << p.HealthPoints << " " << p.AttackDamageMod << " " << p.currency << " " << p.score << " " << p.password << " ";
+    os << p.name << " " << p.diffMod << " " << p.MaxHealth << " " << p.HealthPoints << " " << p.AttackDamageMod << " " << p.currency << " " << p.floor << " " << p.score << " " << p.password << " ";
 
     os << p.weaponList.size() << " ";
 
@@ -403,7 +381,7 @@ istream& operator>>(istream& is, player & p)
 {
 
     int t;
-    is >> p.name >> p.floor >> p.diffMod >> p.MaxHealth >> p.HealthPoints >> p.AttackDamageMod >> p.currency  >> p.score >> p.password;
+    is >> p.name >> p.diffMod >> p.MaxHealth >> p.HealthPoints >> p.AttackDamageMod >> p.currency >> p.floor >> p.score >> p.password;
 
     is >> t;
 
