@@ -44,11 +44,10 @@ class player
 
 
 	public:
-
+		//default constructor
 		player();
 		player(string playerName, int myDiff);
-		//default constructor
-		player(string name, int maxHP, int HP, int d, int curr, int myDiff, int myScore);
+		
 		string getName();
 		int getMaxHP();
 		//returns the maximum health
@@ -67,6 +66,8 @@ class player
 		string getPassword();
 
 		void printWeaponList();
+
+		string getWeaponIndexName(int index);
 		
 		//returns the player's currency
 		void setCurr(int c);
