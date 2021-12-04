@@ -15,18 +15,18 @@ void player::upgradeWeaponList()
     switch (weaponList.size())
     {
     case 0:
-        weaponList.push_back(weapon("Wooden", 5, 1, 0));
+        weaponList.push_back(weapon("Wooden", 10, 1, 0));
         break;
     case 1:
-        weaponList.push_back(weapon("Stone", 10, 2, 0));
+        weaponList.push_back(weapon("Stone", 25, 2, 0));
         break;
     case 2:
-        weaponList.push_back(weapon("Iron", 20, 3, 0));
+        weaponList.push_back(weapon("Iron", 40, 3, 0));
         break;
     case 3:
-        weaponList.push_back(weapon("Gold", 30, 4, 0));
+        weaponList.push_back(weapon("Gold", 60, 4, 0));
     case 4:
-        weaponList.push_back(weapon("Diamond", 50, 5, 0));
+        weaponList.push_back(weapon("Diamond", 80, 5, 0));
         break;
 
     default:
@@ -85,17 +85,26 @@ int player::genRandNum(int a, int b)
 
 //action Attack: returns damage done (or -1 if invalid). requires weaponList index (ex. 0: fists, 1: iron) returns damage done + manages weapon loss 
 
-/*
+
 
 int player::actAttack(int weaponIndex)
 {
+    //NOTE: weaponIndex can be 0, 1, 2...etc
+    //When using fists, -1 is the value sent over
+
+
     int tempDMG = 0;
-    if ((weaponIndex < 0) || (weaponList.size() - 1 < weaponIndex)) //is it a valid index?
+    if ((weaponIndex < -1) || (weaponIndex > weaponList.size())) //is it a valid index? (0, 1, 2...or -1)
     {
         return -1;
     }
 
-    if ((weaponList[weaponIndex].getAmountOwned() <= 0) && (weaponIndex != 0))  // user doesn't have any of that weapon left
+    auto wpListPtr = weaponList.begin();
+
+    //advance iterator "wpListPtr" to proper index
+    advance(wpListPtr, weaponIndex);
+
+    if ( (weaponIndex != -1) && (((*wpListPtr).getAmountOwned() <= 0) && (weaponIndex != 0)))  // user doesn't have any of that weapon left (if using a weapon, that is)
     {
         return 0;
     }
@@ -116,23 +125,23 @@ int player::actAttack(int weaponIndex)
         cout << "As you attack, you get better at damaging your opponents\n+" << tempDMG << " permanent damage added to player" << endl;
     }
 
-    if (weaponIndex == 0)    //using Fists
+    if (weaponIndex == -1)    //using Fists
     {
-        return (AttackDamageMod + weaponList[0].getDMG() + tempDMG);
+        // Fists have 5 dmg points
+        return (AttackDamageMod + 5 + tempDMG);
     }
 
     
 
  
-    weaponList[weaponIndex].decAmount();
+    (*wpListPtr).decAmount();
 
-    return (AttackDamageMod + weaponList[weaponIndex].getDMG() + tempDMG);
+    return (AttackDamageMod + (*wpListPtr).getDMG() + tempDMG);
 
 
 
 }
 
-*/
 
 
 
