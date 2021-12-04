@@ -11,10 +11,14 @@
 👤 **Noam Cicurel, Leeebab (Xynq), Nebil**
 
 
-## Show your support
+## How the main func is modular
 
-Give a ⭐️ if this project helped you!
+cause
 
-<a href="https://www.patreon.com/https:\/\/www.patreon.com\/infiniteplanesociety">
-  <img src="https://c5.patreon.com/external/logo/become_a_patron_button@2x.png" width="160">
-</a>
+## Why are we doing this
+
+cause
+
+## Linked-list weapon implemtation
+
+its not goood
