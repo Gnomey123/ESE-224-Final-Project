@@ -30,10 +30,9 @@ player myPlayer;
 
 enemy myEnemy;
 
+queue<enemy> enemy_rand_encounter_Queue;
+
 fileoperations myFileOp;
-
-bool isBoss = false;
-
 
 
 //generate password for player save/load functionality 
@@ -54,6 +53,11 @@ void printScoreList();
 void printScoreList(list<scoreNode> sblist);
 
 
+//	does all combat UI, returns result of victory or not
+int combate();
+
+
+
 //Function to load init ScoreList from "scoreboard.txt"
 void loadScoreList();
 
@@ -65,6 +69,15 @@ list<scoreNode> genAvgScoreList();
 void sbSortByScore();
 
 void sbSortByName();
+
+void sbAddNewScore(string name, int score);
+
+void initEnemyQueue();//	add 5 random encounter enemies to the Queue
+
+stack<string> enemiesDefeated;
+
+void clearQueue(queue<enemy> & toClear);	// according to user guides, the only way to clear a queue is to swap it with an empty one
+
 
 /*********************************************************************************************************************************/
 //	Main Function w/ funcSeg's (funcSeg's = callable functions that organize and segregate game operations)
@@ -84,9 +97,6 @@ int loadPlayerSeg();
 #define valMasterSeg 4;		// masterSeg is called via alias
 int masterSeg();
 
-#define valCombateSeg 5;		// combateSeg is called via alias
-int combateSeg();
-
 
 int main()
 {
@@ -100,6 +110,8 @@ int main()
 
 	while (segVal != 0)
 	{
+
+
 		switch (segVal)
 		{
 		case 0:						// valQuitGame		[0]
@@ -121,10 +133,18 @@ int main()
 		
 		case 4:						// valMasterSeg		[4]
 			segVal = masterSeg();
-			break;
 
-		case 5:						// valCombateSeg	[5]
-			segVal = combateSeg();
+			if (!enemiesDefeated.empty())
+			{
+				cout << "Enemies defeated in your playthrough:\n" << endl;
+				while (!enemiesDefeated.empty())
+				{
+					cout << enemiesDefeated.top() << endl;
+					enemiesDefeated.pop();
+				}
+			}
+
+
 			break;
 
 		default:
@@ -416,9 +436,10 @@ int masterSeg()
 
 		cout << "\n----------------\nPlease choose from one of the following:\n" << endl;
 		
+		// Change choice 1 if FistOnlyChal
 		cout << "(1) Buy Weapons from the shop" << endl;
 		cout << "(2) Get current player stats" << endl;
-		cout << "(3) Fight a random encountered enemy" << endl;
+		cout << "(3) Fight a random encountered enemy (" << enemy_rand_encounter_Queue.size() << "/5)" << endl;
 		cout << "(4) Fight the next floor boss enemy" << endl;
 		cout << "(5) Display Global Scoreboard" << endl;
 		cout << "(6) Save and quit to Main Menu" << endl;
@@ -489,14 +510,14 @@ int masterSeg()
 
 				
 			case 3:
-				myEnemy.initBasic();
-				myEnemy.ModifyMaxHP(genRandNum(0, 3));
+				if (enemy_rand_encounter_Queue.empty())
+				{
+					cout << "[INFO]: User used up all available rand enemies in queue. In order to maintain original game flow, reloading queue..." << endl;
+					initEnemyQueue();
+				}
 
-				myEnemy.setLVL(myPlayer.getFloor());
-				myEnemy.setCurr((myPlayer.getFloor()) * (genRandNum(1, 3) ) );
-				myEnemy.setDMG(myPlayer.getFloor());
-
-				myEnemy.ModifyMaxHP((myPlayer.getDiffMod() - 1)*2);
+				myEnemy = enemy_rand_encounter_Queue.front();
+				enemy_rand_encounter_Queue.pop();
 
 				cout << "\nSeeking for a fight, you approach an enemy with the following stats:\n" << endl;
 				
@@ -507,22 +528,19 @@ int masterSeg()
 				{
 					cout << "\n\nOOOFFF, you seam to be dead at the moment." << endl;
 
-					cout << "Here\'s your final score: \n" << endl;
+					cout << "Your final score: " << myPlayer.getScore() << " points" << endl;
 					
-					myPlayer.print();
-					cout << "[Weapon Catalog]\n" << endl;
-					//myPlayer.printWeaponList(); TODO
 
-					//myFileOp.SavePlayerScore(*(myPlayer.getPscoreboard())); TODO
+					sbAddNewScore(myPlayer.getName(), myPlayer.getScore());
 
 
 					cout << "Global Top Scores: \n" << endl;
 
-					//myFileOp.ShowScoreRank(); TODO
+					printScoreList();
 
 					cout << "Better luck next time!" << endl;
 
-					exit(0);
+					return menuSeg();
 
 				}
 
@@ -546,19 +564,19 @@ int masterSeg()
 				myEnemy.initBasic();
 				if (myPlayer.getFloor() == 1)
 				{
-					myEnemy.setName("Dirty_Bubble");
+					myEnemy.setName("Dirty Bubble");
 				}
 				else if (myPlayer.getFloor() == 2)
 				{
-					myEnemy.setName("Man_Ray");
+					myEnemy.setName("Man Ray");
 				}
 				else if(myPlayer.getFloor() == 2)
 				{
-					myEnemy.setName("The_Flying_Dutchman");
+					myEnemy.setName("The Flying Dutchman");
 				}
 				else
 				{
-					myEnemy.setName("Robo_pongebob");
+					myEnemy.setName("Robo Spongebob");
 				}
 
 
@@ -585,50 +603,42 @@ int masterSeg()
 				{
 					cout << "\n\nOOOFFF, you seam to be dead at the moment." << endl;
 
-					cout << "Here\'s your final score: \n" << endl;
+					cout << "Your final score: " << myPlayer.getScore() << " points" << endl;
 
-					
-					myPlayer.print();
-					cout << "[Weapon Catalog]\n" << endl;
-					//myPlayer.printWeaponList(); TODO
 
-					//myFileOp.SavePlayerScore(*(myPlayer.getPscoreboard())); TODO
+					sbAddNewScore(myPlayer.getName(), myPlayer.getScore());
 
 
 					cout << "Global Top Scores: \n" << endl;
 
-					//myFileOp.ShowScoreRank(); TODO
+					printScoreList();
 
 					cout << "Better luck next time!" << endl;
 
-					exit(0);
+					return menuSeg();
 
 				}
 
 				else if (fightRes == 1)
 				{
-					
+					clearQueue(enemy_rand_encounter_Queue);
 
 					if (myPlayer.getFloor() == 4)
 					{
 						cout << "CONGRATULATIONS! YOU\'VE FINALLY BEATEN Spongebob Battle for Bikini Bottom" << endl;
 
-						cout << "Here\'s your final score: \n" << endl;
+						cout << "Your final score: " << myPlayer.getScore() << " points" << endl;
 
-						myPlayer.print();
-						cout << "[Weapon Catalog]\n" << endl;
-						//myPlayer.printWeaponList(); TODO
-
-						//myFileOp.SavePlayerScore(*(myPlayer.getPscoreboard()));	TODO
-
-
+						sbAddNewScore(myPlayer.getName(), myPlayer.getScore());
+						
 						cout << "Global Top Scores: \n" << endl;
 
-						//myFileOp.ShowScoreRank(); TODO
+						printScoreList();
 
-						cout << "See you again!" << endl;
-
-						exit(0);
+						cout << "\nYour Global Scores (by name): \n" << endl;
+						sbSearchForName(myPlayer.getName());
+						
+						return menuSeg();
 					}
 
 					myPlayer.setFloor(myPlayer.getFloor() + 1);
@@ -637,10 +647,13 @@ int masterSeg()
 					
 					myPlayer.setHP(myPlayer.getMaxHP());
 
-					cout << "\n\nYou won the battle! You gain back your HP, acquire more loot, and advance to the next Level..." << myPlayer.getFloor() << endl;
+					cout << "\n\nYou won the battle! You gain back your HP, get brand new weapons available for sale, and advance to the next Level..." << myPlayer.getFloor() << endl;
 
+					myPlayer.upgradeWeaponList();
 
 					myPlayer.addScore(myPlayer.getFloor()*10);
+
+					initEnemyQueue();
 
 
 
@@ -733,39 +746,39 @@ int masterSeg()
 }
 
 
-int combateSeg()
+int combate()
 {
 	cout << myEnemy;
-
+	char charI;
 	int i, response = 1;
 	cout << "\n_______________________" << endl;
-	cout << "\nYour current stats:" << endl;
+	cout << "\nYour current stats:\n" << endl;
 	
 	myPlayer.print();
 	cout << "_______________________" << endl;
 	cout << "\nWhich weapon will you use?\n" << endl;
 
-	//temp for fist
-	cout << "(0)  ";
-	cout << "[Weapon = ";
-	//cout << left << setw(10) << setfill(' ') << myPlayer.getWeaponList()[0].getName();	TODO
-	cout << "Damage = ";
-	//cout << left << setw(10) << setfill(' ') << to_string(myPlayer.getWeaponList()[0].getDMG()) + "]";	TODO
+	
+	myPlayer.printWeaponList();
+	
+	cout << "(f)  ";
+	cout << left << setw(20) << setfill(' ') << "Fists";
+	cout << left << setw(20) << setfill(' ') << "5";
+	cout << left << setw(20) << setfill(' ') << "Nothing";
+	cout << left << setw(20) << setfill(' ') << "N/A";
 	cout << endl;
-
-
-	//myPlayer.printWeaponList(); TODO
 	
 	while (1)
 	{
 			cout << "Choice: ";
-			cin >> i;
+			cin >> charI;
+
 			cout << endl;
 
-			// response = myPlayer.actAttack(i); TODO
+			response = myPlayer.actAttack(charI);
 			if (response == -1)
 			{
-				cout << "Please enter a valid number again" << endl;
+				cout << "Please enter a valid choice again" << endl;
 			}
 			else if (response == 0)
 			{
@@ -781,10 +794,12 @@ int combateSeg()
 
 	if (myEnemy.getHP() <= 0)
 	{
+		enemiesDefeated.push(myEnemy.getName());
 		return 1;
 	}
-
+	cout << "_______________________________________________________" << endl;
 	cout << "[Enemy " << myEnemy.getName() << " Does " << myEnemy.getDMG() << " DMP to you]" << endl;
+	cout << "_______________________________________________________" << endl;
 	myPlayer.ModifyHealth((-1) * myEnemy.getDMG());
 
 	if (myPlayer.getHP() <= 0)
@@ -965,7 +980,19 @@ void sbSearchForName(string nameToFind)
 
 }
 
+void sbAddNewScore(string name, int score)
+{
+	fstream sbFile;
 
+	sbFile.open("scoreboard.txt", std::fstream::out | std::fstream::app);
+
+	sbFile << endl;
+	sbFile << name << " " << score;
+
+	sbFile.close();
+
+	sbSortByScore();
+}
 
 list<scoreNode> genAvgScoreList()
 {
@@ -1044,7 +1071,23 @@ list<scoreNode> genAvgScoreList()
 }
 
 
+void initEnemyQueue()
+{
+	for (int x = 0; x < 5; x++)
+	{
+		myEnemy.initBasic();
+		myEnemy.ModifyMaxHP(genRandNum(0, 5));
 
+		myEnemy.setLVL(myPlayer.getFloor());
+		myEnemy.setCurr((myPlayer.getFloor()) * (genRandNum(1, 3)));
+		myEnemy.setDMG(myPlayer.getFloor());
+
+		myEnemy.ModifyMaxHP((myPlayer.getDiffMod() - 1) * 2);
+
+		enemy_rand_encounter_Queue.push(myEnemy);
+	}
+
+}
 
 
 //Password Gen
@@ -1072,6 +1115,12 @@ string genSavePassword()
 
 	return strToReturn;
 
+}
+
+void clearQueue(queue<enemy>& toClear)
+{
+	queue<enemy> empty;
+	swap(toClear, empty);
 }
 
 

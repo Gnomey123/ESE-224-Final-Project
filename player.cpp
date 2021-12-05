@@ -41,6 +41,14 @@ void player::upgradeWeaponList()
 
 player::player()
 {
+    MoneySaveChal = false;
+
+    UsingFistChal = false;
+
+    HalfHealthChal = false;
+
+    DoubleTroubleChal = false;
+
     diffMod = 0;
 
     //fillWeaponList();
@@ -58,6 +66,15 @@ player::player()
 
 player::player(string playerName, int myDiff)
 {
+    MoneySaveChal = false;
+
+    UsingFistChal = false;
+
+    HalfHealthChal = false;
+
+    DoubleTroubleChal = false;
+
+
     diffMod = myDiff;
 
     //fillWeaponList();
@@ -87,28 +104,59 @@ int player::genRandNum(int a, int b)
 
 
 
-int player::actAttack(int weaponIndex)
+int player::actAttack(char charInp)
 {
-    //NOTE: weaponIndex can be 0, 1, 2...etc
-    //When using fists, -1 is the value sent over
+    //NOTE: weaponIndex can be 0, 1, 2...etc (as chars
+    //When using fists, 'f' sent over, and is interpreted as -1
+   
+    int weaponIndex;
+
+    // is it 'f'?
+    if (charInp == 'f')
+    {
+        weaponIndex = -1;
+    }
+
+    // is any other non-number char?
+    else if ((charInp < '0') || (charInp > '9'))
+    {
+        return -1;
+    }
+
+    // its probably 1-9 char
+    else
+    {
+        weaponIndex = (charInp - '0');
+    }
+
 
 
     int tempDMG = 0;
-    if ((weaponIndex < -1) || (weaponIndex > weaponList.size())) //is it a valid index? (0, 1, 2...or -1)
+    if ((weaponIndex < -1) || (weaponIndex > (int)weaponList.size())) //is it a valid index? (0, 1, 2...or -1)
     {
         return -1;
     }
 
     auto wpListPtr = weaponList.begin();
 
-    //advance iterator "wpListPtr" to proper index
-    advance(wpListPtr, weaponIndex);
-
-    if ( (weaponIndex != -1) && (((*wpListPtr).getAmountOwned() <= 0) && (weaponIndex != 0)))  // user doesn't have any of that weapon left (if using a weapon, that is)
+    // Ensure we don't iterate a list with -1 as a value
+    if (weaponIndex != -1)
     {
-        return 0;
+        
+        //advance iterator "wpListPtr" to proper index
+        advance(wpListPtr, weaponIndex);
+
+        if ((*wpListPtr).getAmountOwned() <= 0)  // user doesn't have any of that weapon left (if using a weapon, that is)
+        {
+            return 0;
+        }
+
+        // assuming user has a weapon, dec it
+        (*wpListPtr).decAmount();
+
     }
 
+  
     
    
 
@@ -133,8 +181,6 @@ int player::actAttack(int weaponIndex)
 
     
 
- 
-    (*wpListPtr).decAmount();
 
     return (AttackDamageMod + (*wpListPtr).getDMG() + tempDMG);
 
@@ -214,6 +260,50 @@ int player::getFloor()
 {
     return floor;
 }
+
+
+bool player::isMoneySaveChal()
+{
+    return MoneySaveChal;
+}
+
+bool player::isUsingFistChal()
+{
+    return UsingFistChal;
+}
+
+bool player::isHalfHealthChal()
+{
+    return HalfHealthChal;
+}
+
+bool player::isDoubleTroubleChal()
+{
+    return DoubleTroubleChal;
+}
+
+void player::setMoneySaveChal(bool val)
+{
+    MoneySaveChal  = val;
+}
+
+void player::setUsingFistChal(bool val)
+{
+    UsingFistChal = val;
+}
+
+void player::setHalfHealthChal(bool val)
+{
+    HalfHealthChal = val;
+}
+
+void player::setDoubleTroubleChal(bool val)
+{
+    DoubleTroubleChal = val;
+}
+
+
+
 
 
 //sets the name
@@ -402,6 +492,8 @@ ostream& operator<<(ostream& os, player& p)
         os << w << " ";
     }
 
+    os << " " << p.MoneySaveChal << " " << p.UsingFistChal << " " << p.HalfHealthChal << " " << p.DoubleTroubleChal;
+
     return os;
 }
 
@@ -426,6 +518,8 @@ istream& operator>>(istream& is, player & p)
         is >> w;
         p.weaponList.push_back(w);
     }
+
+    is >> p.MoneySaveChal >> p.UsingFistChal >> p.HalfHealthChal >> p.DoubleTroubleChal;
 
     return is;
 }
