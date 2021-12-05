@@ -35,10 +35,24 @@ class player
 		int floor;
 
 
+		//chals
+
+		bool Boss;
+
+		bool MoneySaveChal;
+
+		bool UsingFistChal;
+
+		bool HalfHealthChal;
+
+		bool DoubleTroubleChal;
+
+
 		// Password is now being used to name save files. (instead of the player name)
 		string password;
 
 
+		
 
 
 
@@ -62,6 +76,22 @@ class player
 		int getDiffMod();
 
 		int getFloor();
+
+		bool isMoneySaveChal();
+
+		bool isUsingFistChal();
+
+		bool isHalfHealthChal();
+
+		bool isDoubleTroubleChal();
+
+		void setMoneySaveChal(bool val);
+
+		void setUsingFistChal(bool val);
+
+		void setHalfHealthChal(bool val);
+
+		void setDoubleTroubleChal(bool val);
 
 		string getPassword();
 
@@ -93,8 +123,9 @@ class player
 
 		list<weapon> getWeaponList();
 
-		//action Attack: returns damage done (or -1 if invalid) requires weaponList index (ex. 1: fists, 2: iron) returns damage done + manages weapon loss 
-		int actAttack(int);
+		//action Attack: returns damage done (or -1 if invalid) requires weaponList index (ex. 1: fists, 2: iron) returns damage done + manages weapon loss
+		//note: to make function compatible, it will now input chars rather than ints
+		int actAttack(char);
 
 		int buyWeapon(int i);
 

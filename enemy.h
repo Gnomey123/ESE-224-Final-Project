@@ -9,6 +9,8 @@ class enemy
         
         //This should hold the enemy's name
         string Name;
+
+        string nameList[10] = { "Slime", "Goblin", "Squirrel", "Local Heretic", "Anti-Seawolve", "College Debt Collector", "Python User", "[some who call him]... Tim", "Jellyfish", "Jungle Bat" };
         
         
         //This should hold the maximum health of the enemy

@@ -1,12 +1,13 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <stdlib.h>
 #include "enemy.h"
 using namespace std;
 
 enemy::enemy()
 {
-	Name = "Slime";
+	Name = "";
 	MaxHealth = 10;
 	HealthPoints = 10;
 	AttackDamage = 1;
@@ -26,9 +27,9 @@ enemy::enemy(string n, int maxH, int health, int attack, int lev, int curr)
 
 void enemy::initBasic()
 {
-	Name = "Slime";
-	MaxHealth = 10;
-	HealthPoints = 10;
+	Name = nameList[(rand() % 10)];	//gen name 0-9 from list
+	MaxHealth = 12;
+	HealthPoints = 12;
 	AttackDamage = 5;
 	level = 1;
 	currency = 5;
@@ -101,6 +102,6 @@ void enemy::setCurr(int c)
 }
 ostream& operator <<(ostream& os, enemy& e)
 {
-	os << "Level " << e.level << " Enemy: " << e.Name << ", with HP : " << e.MaxHealth << "/" << e.HealthPoints << ", DMG : " << e.AttackDamage << ", and Value : $" << e.currency << endl;
+	os << "Level " << e.level << " Enemy: \"" << e.Name << "\", with HP : " << e.MaxHealth << "/" << e.HealthPoints << ", DMG : " << e.AttackDamage << ", and Value : $" << e.currency << endl;
 	return os;
 }
