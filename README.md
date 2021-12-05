@@ -25,4 +25,9 @@
 > The player will have the option to purchase a weapon on each floor to help them defeat the main enemy of the floor. A default weapon is the player's fist and its attack damage is 5, and the price is 0. This file will get and set the weapon's amount, damage, cost, and name.
 
 ##ScoreNode Class
-> This class will keep track of the players score 
+> This class will keep track of the players score as they go through the game. This board will also keep track of all previous scores as well. This class will also set and get the players name and score, amnd have a function to print all of this to the user.
+
+##File Operations Class
+> This class is quite simple seeing as it will only create a player file and save it when the player is done.
+
+
