@@ -28,8 +28,8 @@ enemy::enemy(string n, int maxH, int health, int attack, int lev, int curr)
 void enemy::initBasic()
 {
 	Name = nameList[(rand() % 10)];	//gen name 0-9 from list
-	MaxHealth = 12;
-	HealthPoints = 12;
+	MaxHealth = 10;
+	HealthPoints = 10;
 	AttackDamage = 5;
 	level = 1;
 	currency = 5;
