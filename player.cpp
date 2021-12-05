@@ -55,8 +55,8 @@ player::player()
 
     name = "";
 
-    MaxHealth = 25;
-    HealthPoints = 25;
+    MaxHealth = 26;
+    HealthPoints = 26;
     AttackDamageMod = 0;
     floor = 1;
     score = 0;
@@ -126,9 +126,13 @@ int player::actAttack(char charInp)
     // its probably 1-9 char
     else
     {
+        // is player trying to use weapons during FistOnlyChal? 
+        if (UsingFistChal)
+        {
+            return -1;
+        }
         weaponIndex = (charInp - '0');
     }
-
 
 
     int tempDMG = 0;

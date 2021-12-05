@@ -56,7 +56,7 @@ void printScoreList(list<scoreNode> sblist);
 //	does all combat UI, returns result of victory or not
 int combate();
 
-
+stack<string> combateLogStack;
 
 //Function to load init ScoreList from "scoreboard.txt"
 void loadScoreList();
@@ -422,6 +422,7 @@ int masterSeg()
 	bool isShopping = false;
 
 	int i;
+	int multiplier;
 	int weaponSel;
 	char c;
 	string name;
@@ -436,11 +437,33 @@ int masterSeg()
 
 		cout << "\n----------------\nPlease choose from one of the following:\n" << endl;
 		
-		// Change choice 1 if FistOnlyChal
-		cout << "(1) Buy Weapons from the shop" << endl;
+		// Change choice 1 if FistOnlyChal is true
+		if (myPlayer.isUsingFistChal())
+		{
+			cout << "(x) Buy Weapons from the shop [Close due to covid, reopening on the date of TBA]" << endl;
+		}
+		else
+		{
+			cout << "(1) Buy Weapons from the shop" << endl;
+		}
+		
 		cout << "(2) Get current player stats" << endl;
 		cout << "(3) Fight a random encountered enemy (" << enemy_rand_encounter_Queue.size() << "/5)" << endl;
-		cout << "(4) Fight the next floor boss enemy" << endl;
+		
+		// Change choice 1 if FistOnlyChal is true
+		if (myPlayer.isMoneySaveChal())
+		{
+			cout << "(x) Fight the next floor boss enemy [No money? sorry bud: no ticket, no ride]" << endl;
+		}
+		else if((myPlayer.getCurr() < 25))
+		{
+			cout << "(4) Fight the next floor boss enemy [Godspeed, you magnificent bastard]" << endl;
+		}
+		else
+		{
+			cout << "(4) Fight the next floor boss enemy" << endl;
+		}
+		
 		cout << "(5) Display Global Scoreboard" << endl;
 		cout << "(6) Save and quit to Main Menu" << endl;
 
@@ -456,6 +479,12 @@ int masterSeg()
 			{
 					
 			case 1:
+				if (myPlayer.isUsingFistChal())
+				{
+					cout << "\n[Huell]: We're closed....\n?\nClosed..." << endl;
+					break;
+				}
+
 				cout << "You currently have $" << myPlayer.getCurr() << " available" << endl;
 				cout << "[Catalog]\n" << endl;
 				myPlayer.printWeaponList();
@@ -519,10 +548,27 @@ int masterSeg()
 				myEnemy = enemy_rand_encounter_Queue.front();
 				enemy_rand_encounter_Queue.pop();
 
+
+				//if user is doing x2 enemy double trouble chal, x2 health
+				if (myPlayer.isDoubleTroubleChal())
+				{
+					myEnemy.ModifyMaxHP(myEnemy.getMaxHP());
+				}
+
+
 				cout << "\nSeeking for a fight, you approach an enemy with the following stats:\n" << endl;
-				
+
 
 				fightRes = combate();
+
+
+				cout << "[Combat Log]:\n" << endl;
+
+				while (!combateLogStack.empty())
+				{
+					cout << combateLogStack.top() << endl;
+					combateLogStack.pop();
+				}
 
 				if (fightRes == 0)
 				{
@@ -561,6 +607,14 @@ int masterSeg()
 				
 				break;
 			case 4:
+				if (myPlayer.isMoneySaveChal() && (myPlayer.getCurr() < 25))
+				{
+					cout << "[Infomaniac]: Whoops! You Have To Put The CD In Your Computer! (get more money pal [" << myPlayer.getCurr() << "/25] )" << endl;
+					break;
+				}
+				
+
+
 				myEnemy.initBasic();
 				if (myPlayer.getFloor() == 1)
 				{
@@ -594,10 +648,24 @@ int masterSeg()
 				myEnemy.setDMG((myPlayer.getFloor()* 2) + 2);
 
 
+				//if user is doing x2 enemy double trouble chal, x2 health
+				if (myPlayer.isDoubleTroubleChal())
+				{
+					myEnemy.ModifyMaxHP(myEnemy.getMaxHP());
+				}
+
 				cout << "\nMaking your way to the top, you are ambushed by the dreaded \"" << myEnemy.getName() << "\" with the stats of:\n" << endl;
 
 
 				fightRes = combate();
+
+				cout << "[Combat Log]:\n" << endl;
+
+				while (!combateLogStack.empty())
+				{
+					cout << combateLogStack.top() << endl;
+					combateLogStack.pop();
+				}
 
 				if (fightRes == 0)
 				{
@@ -654,6 +722,87 @@ int masterSeg()
 					myPlayer.addScore(myPlayer.getFloor()*10);
 
 					initEnemyQueue();
+
+
+					multiplier = 0;
+
+					if (myPlayer.isMoneySaveChal())
+					{
+						myPlayer.setMoneySaveChal(false);
+						multiplier += 2;
+					}
+
+					if (myPlayer.isUsingFistChal())
+					{
+						myPlayer.setUsingFistChal(false);
+						multiplier += 2;
+					}
+
+
+					if (myPlayer.isHalfHealthChal())
+					{
+						myPlayer.setHalfHealthChal(false);
+						myPlayer.setMaxHP(26);
+						myPlayer.setHP(26);
+						multiplier += 2;
+					}
+
+
+					if (myPlayer.isDoubleTroubleChal())
+					{
+						myPlayer.setDoubleTroubleChal(false);
+						multiplier += 2;
+					}
+
+					if (multiplier != 0)
+					{
+						cout << "Nice work on those challenges! you've got a x" << multiplier << " point multiplier!" << endl;
+						cout << "You can now live in harmony....\n" << endl;
+
+						myPlayer.setScore(myPlayer.getScore()* multiplier);
+					}
+
+
+
+					cout << endl;
+					cout << "_____________________" << endl;
+					cout << "|OpTiNal cHaLlEnGes! |" << endl;
+					cout << "|____________________|" << endl;
+
+					cout << "WannA sEE thEM? [ALl x2 pOINTS]" << endl;
+					if (Resp())
+					{
+						cout << "\nMoney Save Challenge (aka: gotta have 25 dollars to fight big-boss)" << endl;
+
+						if (Resp())
+						{
+							myPlayer.setMoneySaveChal(true);
+						}
+
+						cout << "\nUsing Fist Only Challenge (aka: Chuck Norris simulation, no weapons [shopping or using], only kicks that can cure cancer)" << endl;
+
+						if (Resp())
+						{
+							myPlayer.setUsingFistChal(true);
+						}
+
+						cout << "\nHalf Health Challenge (aka: Become Prince Philip, but get your youth back after big-boss)" << endl;
+
+						if (Resp())
+						{
+							myPlayer.setMaxHP(13);
+							myPlayer.setHP(13);
+							myPlayer.setHalfHealthChal(true);
+						}
+
+						cout << "\nDouble Trouble Challenge (aka: Give your next enemies plot armor. Random + boss enemies lose it after big-boss)" << endl;
+
+						if (Resp())
+						{
+							myPlayer.setDoubleTroubleChal(true);
+						}
+
+					}
 
 
 
@@ -758,8 +907,10 @@ int combate()
 	cout << "_______________________" << endl;
 	cout << "\nWhich weapon will you use?\n" << endl;
 
-	
-	myPlayer.printWeaponList();
+	if (!myPlayer.isUsingFistChal())
+	{
+		myPlayer.printWeaponList();
+	}
 	
 	cout << "(f)  ";
 	cout << left << setw(20) << setfill(' ') << "Fists";
@@ -792,15 +943,20 @@ int combate()
 			}
 	}
 
+	combateLogStack.push("\"" + myEnemy.getName() + "\"  Health: [" + to_string(myEnemy.getHP()) + "/" + to_string(myEnemy.getMaxHP()) + "]"); //really ugly string, but it's the most efficient for the cpu (I'm told...)
+
 	if (myEnemy.getHP() <= 0)
 	{
 		enemiesDefeated.push(myEnemy.getName());
 		return 1;
 	}
+
 	cout << "_______________________________________________________" << endl;
 	cout << "[Enemy " << myEnemy.getName() << " Does " << myEnemy.getDMG() << " DMP to you]" << endl;
 	cout << "_______________________________________________________" << endl;
 	myPlayer.ModifyHealth((-1) * myEnemy.getDMG());
+
+	combateLogStack.push("\"" + myPlayer.getName() + "\"  Health: [" + to_string(myPlayer.getHP()) + "/" + to_string(myPlayer.getMaxHP()) + "]");
 
 	if (myPlayer.getHP() <= 0)
 	{
