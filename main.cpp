@@ -330,15 +330,16 @@ int newPlayerSeg()
 
 			cout << "\nStarting New Game..." << endl;
 
-			
+			player temp;
 
-			myPlayer.setName(newPlayerName);
-			myPlayer.setDiffMod(i);
-			myPlayer.upgradeWeaponList();//			Always called first thing
+			temp.setName(newPlayerName);
+			temp.setDiffMod(i);
+			temp.upgradeWeaponList();//			Always called first thing
 
 			myFileOp.setFilename(pass);
-			myPlayer.setPassword(pass);
+			temp.setPassword(pass);
 			
+			myPlayer = temp;
 
 			isLooping = false;
 
@@ -384,8 +385,10 @@ int loadPlayerSeg() // all todo
 
 		if (myFileOp.saveFileExists(password))
 		{
+			player temp;
+			myFileOp.LoadPlayer(temp);
 
-			myFileOp.LoadPlayer(myPlayer);
+			myPlayer = temp;
 
 			isLooping = false;
 			cout << "Loading saved player \"" << myPlayer.getName() << "\"\n..." << endl;
