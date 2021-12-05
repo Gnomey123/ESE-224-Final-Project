@@ -1,24 +1,28 @@
-<h1 align="center">Welcome to ESE124 Ant Project 👋</h1>
+<h1 align="center">Welcome to ESE224 Final Project 👋</h1>
 <p>
 </p>
 
-> Ant Michael had to effectively find its way out of a maze. Of course, Michael did not know the structure of the maze. case bad
-
-### 🏠 [Homepage] It is 3, 24, 20, 12, 19, 17, 17, 22, 19, 23, 19, 4, 0, 7, 6, 7, 19, 10, 12, 16, 17, 6, 14, 4, 3, 17, 24, 20, 13, 24, 8, 16, 17, 1, 24, 9, 21, 15, 0, 5, 15, 4, 4, 23, 6, 11, 25, 14, 4, 20, 4, 9, 14, 18, 12, 8, 7, 21, 6, 4, 21, 7, 21, 4, 2, 14, 3, 14, 7, 18, 13, 6, 22, 16, 6, 1, 21, 21, 15, 3, 5, 24, 9, 11, 2, 10, 5, 21, 4, 20, 11, 19, 12, 5, 12, 13, 12, 5, 17, 19, 3, 14, 21, 12, 15, 17, 7, 7, 2, 2, 21, 1, 10, 22, 13, 5.
+> The user will be playing a Text-Based Adventure Game. They will have to go through 4 different floors and defeat the main boss of each to move forward.
 
 ## Author
 
-👤 **Noam Cicurel, Leeebab (Xynq), Nebil**
+👤 **Noam Cicurel, Emily Zheng, and Ashley Marie Estrada**
 
 
-## How the main func is modular
+## Main File
 
-cause
+>Here we have the main function that will have an infinite loop using a switch to see what the program will do. By default the switch is given a value so it can enter the main menu to start the game. Once there, the user has many choices to go through: Check the scoreboard, view the avg score. create a new game, load a new game or quit the game entirely. When creating a new game we have a password radomly generated for the player to use if they ever choose o return to their current game.
 
-## Why are we doing this
+## Player Class
 
-cause
+> When the player enters a new floor, a weapon list will be generated and it will update at each new floor. It's default stats are as follows: Max health-25, Current Health- 25, Attack damage-0, and Currency-0. It will have functions to print their weapons, to attack the enemy, to get and set their name, health attack, password, difficulty, score, currency, to buy a weapon, and to print all of the player's information.
 
-## Linked-list weapon implemtation
+## Enemy Class
 
-its not goood
+> An enemy will appear at every floor, but there will also be smaller enemies the player can fight to gain extra currency or to complete side quests. A defualt enemy is as follows: Max health-10, Current Health- 10, Attack damage-1, and Currency-1. The class will also have functions that sets and gets an enemy's name, helath, damage, level, and currency, and to modify its health and damage.
+
+## Weapon Class
+> The player will have the option to purchase a weapon on each floor to help them defeat the main enemy of the floor. A default weapon is the player's fist and its attack damage is 5, and the price is 0. This file will get and set the weapon's amount, damage, cost, and name.
+
+##ScoreNode Class
+> This class will keep track of the players score 
