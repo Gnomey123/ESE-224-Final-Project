@@ -100,7 +100,7 @@ int masterSeg();
 
 int main()
 {
-
+	initEnemyQueue();
 	/*********************/
 	//	GLOBAL INIT ZONE
 	srand((unsigned int)time(NULL));
@@ -453,10 +453,10 @@ int masterSeg()
 		// Change choice 1 if FistOnlyChal is true
 		if (myPlayer.isMoneySaveChal())
 		{
-			cout << "(x) Fight the next floor boss enemy [No money? sorry bud: no ticket, no ride]" << endl;
-		}
-		else if((myPlayer.getCurr() < 25))
-		{
+			if ((myPlayer.getCurr() < 25))
+			{
+				cout << "(x) Fight the next floor boss enemy [No money? sorry bud: no ticket, no ride]" << endl;
+			}
 			cout << "(4) Fight the next floor boss enemy [Godspeed, you magnificent bastard]" << endl;
 		}
 		else
@@ -953,7 +953,7 @@ int combate()
 
 	cout << "_______________________________________________________" << endl;
 	cout << "[Enemy " << myEnemy.getName() << " Does " << myEnemy.getDMG() << " DMP to you]" << endl;
-	cout << "_______________________________________________________" << endl;
+	cout << "_______________________________________________________\n" << endl;
 	myPlayer.ModifyHealth((-1) * myEnemy.getDMG());
 
 	combateLogStack.push("\"" + myPlayer.getName() + "\"  Health: [" + to_string(myPlayer.getHP()) + "/" + to_string(myPlayer.getMaxHP()) + "]");
